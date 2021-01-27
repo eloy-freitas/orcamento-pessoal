@@ -42,6 +42,7 @@ class BD {
         for (let i = 1; i <= id; i++) {
             let despesa = JSON.parse(localStorage.getItem(i))
             if (despesa !== null) {
+                despesa.id = i
                 despesas.push(despesa)
             }
         }
@@ -76,8 +77,12 @@ class BD {
             despesas = despesas.filter(d => d.valor == despesa.valor)
         }
 
-
+        console.log(despesas)
         return despesas
+    }
+
+    remover(id){
+        localStorage.removeItem(id)
     }
 }
 
@@ -100,7 +105,7 @@ function modificaModal(tipoMensagem) {
 
     } else if (tipoMensagem === 'erro') {
         titulo.innerHTML = 'Falha na execução!!!'
-        titulo.className += 'modal-title text-danger'
+        titulo.className = 'modal-title text-danger'
 
         mensagem.innerHTML = 'Campos obrigatórios não foram preenchidos'
 
@@ -165,6 +170,16 @@ function carregaListaDespesa(despesas = Array(), filtro = false) {
         linha.insertCell(1).innerHTML = despesa.tipo
         linha.insertCell(2).innerHTML = despesa.descricao
         linha.insertCell(3).innerHTML = despesa.valor
+        let btn = document.createElement("button")
+        btn.id = `id_despesa_${despesa.id}`
+        btn.className = 'btn btn-danger'
+        btn.innerHTML = '<i class="fas fa-times"></i>'
+        btn.onclick = function(){
+            let id = this.id.replace('id_despesa_','')
+            bd.remover(id)
+            carregaListaDespesa()
+        }
+        linha.insertCell(4).append(btn)
     })
 }
 
